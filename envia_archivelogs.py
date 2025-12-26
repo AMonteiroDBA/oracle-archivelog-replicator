@@ -245,12 +245,13 @@ def is_file_stable(file_path, check_interval_seconds=3, num_checks=2):
     Verifica se o tamanho de um arquivo está estável por um período.
     Args:
 
+        file_path (str): O caminho completo do arquivo.
+           check_interval_seconds (int): Intervalo de tempo entre as verificações de tamanho.
+              num_checks (int): Número de verificações de tamanho para considerar o arquivo estável.
+    Returns:
+       bool: True se o tamanho do arquivo não mudar durante as verificações, False caso contrário.
+    """
 
-        def file_exists_on_dr(filename):
-    """
-    Verifica se o arquivo já existe em /u12 OU /u15 no DR.
-    Retorna True se encontrado em qualquer um dos diretórios.
-    """
     ssh_command = [
         "ssh",
         f"{SSH_USER}@{DR_SERVER}",
