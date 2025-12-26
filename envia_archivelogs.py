@@ -422,7 +422,7 @@ def replicate_archivelogs(specific_filename=None):
 
 
             for source_file_path, sequence_number in all_archivelog_files:
-                          filename = os.path.basename(source_file_path)
+                      filename = os.path.basename(source_file_path)
                 if sequence_number > highest_applied_seq: # Apenas se o archivelog ainda não foi aplicado no DR
                     if is_file_stable(source_file_path) and not file_exists_on_dr(filename): # E se o arquivo estiver estáveland not file_exists_on_dr(filename)  and not file_exists_on_dr(filename):
                       
