@@ -12,7 +12,7 @@ import signal
 from concurrent.futures import ThreadPoolExecutor
 
 # ===== Configuraes Principais =====
-SISDBAHOME = os.path.expanduser("~alkdba")
+SISDBAHOME = os.path.expanduser("/home/oracle/.alkdba")
 os.makedirs(os.path.join(SISDBAHOME, "log"), exist_ok=True)
 os.makedirs(os.path.join(SISDBAHOME, "tmp"), exist_ok=True)
 
@@ -60,7 +60,7 @@ def is_process_running(pid):
 def acquire_lock():
     current_pid = os.getpid()
     try:
-        lock_fd = open(LOCKFILE, "a")
+        lock_fd = open(LOCKFILE, "a+")
         fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         lock_fd.seek(0)
         content = lock_fd.read().strip()
