@@ -20,8 +20,6 @@ os.makedirs(os.path.join(SISDBA_HOME, 'tmp'), exist_ok=True)
 
 
 SOURCE_BASE_DIR = "/u02/flash_recovery_area/DBPROD/archivelog/"
-241
-/flash_recovery_area/DBPROD/archivelog/"
 DEST_BASE_DIR_U15 = "/u15/flash_recovery_area/DBPROD/archivelog/"
 DR_SERVER = "PAMVS0003L"
 SSH_USER = "oracle"
