@@ -20,7 +20,9 @@ os.makedirs(os.path.join(SISDBA_HOME, 'tmp'), exist_ok=True)
 
 
 SOURCE_BASE_DIR = "/u02/flash_recovery_area/DBPROD/archivelog/"
-DEST_BASE_DIR = "/u12/flash_recovery_area/DBPROD/archivelog/"
+241
+/flash_recovery_area/DBPROD/archivelog/"
+DEST_BASE_DIR_U15 = "/u15/flash_recovery_area/DBPROD/archivelog/"
 DR_SERVER = "PAMVS0003L"
 SSH_USER = "oracle"
 
@@ -245,6 +247,29 @@ def is_file_stable(file_path, check_interval_seconds=3, num_checks=2):
     """
     Verifica se o tamanho de um arquivo está estável por um período.
     Args:
+
+
+        def file_exists_on_dr(filename):
+    """
+    Verifica se o arquivo já existe em /u12 OU /u15 no DR.
+    Retorna True se encontrado em qualquer um dos diretórios.
+    """
+    ssh_command = [
+        "ssh",
+        f"{SSH_USER}@{DR_SERVER}",
+        f"[ -f {DEST_BASE_DIR}{filename} ] || [ -f {DEST_BASE_DIR_U15}{filename} ] && echo 'EXISTS' || echo 'NOT_EXISTS'"
+    ]
+
+    try:
+        result = subprocess.run(ssh_command, check=False, capture_output=True, text=True, timeout=30)
+        output = result.stdout.strip()
+        exists = output == "EXISTS"
+        if exists:
+            logging.debug(f"Arquivo {filename} já existe no DR (/u12 ou /u15).")
+        return exists
+    except Exception as e:
+        logging.error(f"Erro ao verificar existência de {filename} no DR: {e}")
+        return False
         file_path (str): O caminho completo do arquivo.
         check_interval_seconds (int): Intervalo de tempo entre as verificações de tamanho.
         num_checks (int): Número de verificações de tamanho para considerar o arquivo estável.
@@ -370,7 +395,7 @@ def replicate_archivelogs(specific_filename=None):
 
 
                 # NOVO: Verificar estabilidade antes de copiar o arquivo específico
-                if is_file_stable(found_file_path):
+                if is_file_stable(source_file_path) and not file_exists_on_dr(filename):
                     logging.info(f"Arquivo '{specific_filename}' encontrado e estável em '{os.path.dirname(found_file_path)}'. Iniciando transferência.")
                     future = executor.submit(execute_rsync, found_file_path, dest_dir_remote, sequence_number)
                     futures.append(future)
@@ -408,7 +433,7 @@ def replicate_archivelogs(specific_filename=None):
 
             for source_file_path, sequence_number in all_archivelog_files:
                 if sequence_number > highest_applied_seq: # Apenas se o archivelog ainda não foi aplicado no DR
-                    if is_file_stable(source_file_path): # E se o arquivo estiver estável
+                    if is_file_stable(source_file_path) and not file_exists_on_dr(filename):(source_file_path): # E se o arquivo estiver estável
                         future = executor.submit(execute_rsync, source_file_path, dest_dir_remote, sequence_number)
                         futures.append(future)
                     else:
