@@ -20,16 +20,15 @@ os.makedirs(os.path.join(SISDBA_HOME, 'tmp'), exist_ok=True)
 
 
 SOURCE_BASE_DIR = "/u02/flash_recovery_area/DBPROD/archivelog/"
+DEST_BASE_DIR = "/u12/flash_recovery_area/DBPROD/archivelog/"
 DEST_BASE_DIR_U15 = "/u15/flash_recovery_area/DBPROD/archivelog/"
 DR_SERVER = "PAMVS0003L"
 SSH_USER = "oracle"
-
 
 LOG_FILE = os.path.join(SISDBA_HOME, "log", "archivelog_replication.log")
 LOCK_FILE = os.path.join(SISDBA_HOME, "tmp", "archivelog_replication.lock")
 LOCK_TIMEOUT_MINUTES = 30
 MAX_WORKERS = 5
-
 
 ARCHIVELOG_PATTERN = re.compile(r"o1_mf_1_(\d+)_.*\.arc")
 DATE_DIR_PATTERN = re.compile(r"^\d{4}_\d{2}_\d{2}$")
