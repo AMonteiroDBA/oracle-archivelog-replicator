@@ -169,7 +169,7 @@ def get_highest_applied_sequence_on_dr():
     logging.info(f"Consultando sequence no DR ({DRSERVER})...")
     sql_command = """source /home/oracle/.alkdba/lnx/bash_profile_silent; sqlplus -s / as sysdba <<EOF
 set feed off term off head off pages 0 trim on trimspool on
-SELECT LPAD(NVL(MAX(SEQUENCE#), 0), 10) FROM V\$LOG WHERE ARCHIVED='YES';
+SELECT MAX(SEQUENCE#) FROM V$MANAGED_STANDBY WHERE PROCESS LIKE 'MRP%', 10) FROM V\$LOG WHERE ARCHIVED='YES';
 EOF
 """
     ssh_command = ["ssh", f"{SSHUSER}@{DRSERVER}", sql_command]
