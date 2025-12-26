@@ -268,14 +268,6 @@ def is_file_stable(file_path, check_interval_seconds=3, num_checks=2):
     except Exception as e:
         logging.error(f"Erro ao verificar existência de {filename} no DR: {e}")
         return False
-        file_path (str): O caminho completo do arquivo.
-        check_interval_seconds (int): Intervalo de tempo entre as verificações de tamanho.
-        num_checks (int): Número de verificações de tamanho para considerar o arquivo estável.
-                          Se for 2, significa que o arquivo deve ter o mesmo tamanho em duas leituras
-                          separadas pelo check_interval_seconds.
-    Returns:
-        bool: True se o tamanho do arquivo não mudar durante as verificações, False caso contrário.
-    """
     if not os.path.exists(file_path):
         logging.warning(f"Arquivo não encontrado para verificação de estabilidade: {file_path}")
         return False
